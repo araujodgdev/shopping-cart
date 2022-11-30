@@ -1,3 +1,4 @@
+import { searchCep } from './helpers/cepFunctions';
 import './style.css';
 import {
   createCartProductElement,
@@ -54,4 +55,4 @@ generateProductList();
 
 document
   .querySelector('.cep-button')
-  .addEventListener('click', () => console.log('ok'));
+  .addEventListener('click', searchCep);
