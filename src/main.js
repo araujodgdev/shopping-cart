@@ -5,7 +5,7 @@ import {
   createProductElement,
 } from './helpers/shopFunctions';
 import { fetchProduct, fetchProductsList } from './helpers/fetchFunctions';
-import { saveCartID } from './helpers/cartFunctions';
+import { getSavedCartIDs, saveCartID } from './helpers/cartFunctions';
 
 const prodSection = document.querySelector('.products');
 const cartSection = document.querySelector('.cart__products');
@@ -42,7 +42,7 @@ async function generateProductList() {
       btn.addEventListener('click', async () => {
         await saveCartID(id);
         const productInfo = await fetchProduct(id);
-        cartSection.appendChild(await createCartProductElement(productInfo));
+        cartSection.appendChild(createCartProductElement(productInfo));
       });
     });
   } catch (error) {
@@ -53,6 +53,8 @@ async function generateProductList() {
 
 generateProductList();
 
-document
-  .querySelector('.cep-button')
-  .addEventListener('click', searchCep);
+getSavedCartIDs().forEach((id) => fetchProduct(id).then((data) => {
+  cartSection.appendChild(createCartProductElement(data));
+}));
+
+document.querySelector('.cep-button').addEventListener('click', searchCep);
