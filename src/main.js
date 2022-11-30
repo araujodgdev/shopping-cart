@@ -17,11 +17,23 @@ function rmvLoadingEl() {
   prodSection.removeChild(loadingEl);
 }
 
+function createErrorEl() {
+  const errorEl = document.createElement('p');
+  errorEl.innerHTML = 'Algum erro ocorreu, recarregue a página e tente novamente';
+  errorEl.classList.add('error');
+  prodSection.appendChild(errorEl);
+}
+
 async function generateProductList() {
   addLoadingEl();
-  const productList = await fetchProductsList('computador');
-  rmvLoadingEl();
-  productList.forEach((prod) => prodSection.appendChild(createProductElement(prod)));
+  try {
+    const productList = await fetchProductsList('computador');
+    rmvLoadingEl();
+    productList.forEach((prod) => prodSection.appendChild(createProductElement(prod)));
+  } catch (error) {
+    rmvLoadingEl();
+    createErrorEl();
+  }
 }
 
 generateProductList();
