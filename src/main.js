@@ -5,10 +5,11 @@ import {
   createProductElement,
 } from './helpers/shopFunctions';
 import { fetchProduct, fetchProductsList } from './helpers/fetchFunctions';
-import { getSavedCartIDs, saveCartID } from './helpers/cartFunctions';
+import { getPrevPrice, getSavedCartIDs, saveCartID } from './helpers/cartFunctions';
 
 const prodSection = document.querySelector('.products');
 const cartSection = document.querySelector('.cart__products');
+const totalPriceEl = document.querySelector('.total-price');
 
 function addLoadingEl() {
   const loadingEl = document.createElement('p');
@@ -40,8 +41,11 @@ async function generateProductList() {
       const id = elemnt.querySelector('.product__id').innerHTML;
       const btn = elemnt.querySelector('.product__add');
       btn.addEventListener('click', async () => {
+        let prevPrice = getPrevPrice();
         await saveCartID(id);
         const productInfo = await fetchProduct(id);
+        prevPrice += productInfo.price;
+        totalPriceEl.innerHTML = prevPrice;
         cartSection.appendChild(createCartProductElement(productInfo));
       });
     });
@@ -58,3 +62,8 @@ getSavedCartIDs().forEach((id) => fetchProduct(id).then((data) => {
 }));
 
 document.querySelector('.cep-button').addEventListener('click', searchCep);
+
+window.onload = () => {
+  const prevPrice = getPrevPrice();
+  totalPriceEl.innerHTML = prevPrice;
+};

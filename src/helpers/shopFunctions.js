@@ -1,4 +1,5 @@
-import { removeCartID } from './cartFunctions';
+import { getPrevPrice, removeCartID } from './cartFunctions';
+import { fetchProduct } from './fetchFunctions';
 
 // Esses comentários que estão antes de cada uma das funções são chamados de JSdoc,
 // experimente passar o mouse sobre o nome das funções e verá que elas possuem descrições!
@@ -45,9 +46,14 @@ export const getIdFromProduct = (product) => (
  * @param {Element} li - Elemento do produto a ser removido do carrinho.
  * @param {string} id - ID do produto a ser removido do carrinho.
  */
-const removeCartProduct = (li, id) => {
+const removeCartProduct = async (li, id) => {
   li.remove();
-  removeCartID(id);
+  const currPrice = getPrevPrice();
+  const subtract = await fetchProduct(id);
+  const result = currPrice - subtract.price;
+  document.querySelector('.total-price').innerHTML = result;
+  localStorage.setItem('totalPrice', result);
+  await removeCartID(id);
 };
 
 /**
